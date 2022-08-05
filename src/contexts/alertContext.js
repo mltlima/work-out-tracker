@@ -2,8 +2,8 @@ import { createContext, useState } from "react";
 
 export const AlertContext = createContext(null);
 
-export default function AlertProvider(props) {
-    const {children} = props;
+export default function AlertProvider(Props) {
+    const {children} = Props;
     const [alert, setAlert] = useState(null);
 
     function handleClose() {
