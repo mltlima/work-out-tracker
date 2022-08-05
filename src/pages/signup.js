@@ -114,6 +114,12 @@ const signupButton = {
     backgroundColor: "#96B3FE"
 }
 
+export const cssConfig = {
+    containerBox,
+    actionsContainer,
+    signupButton
+}
+
 /*
 const ContainerBox = styled(Box) `
     marginTop: 180px;
