@@ -4,8 +4,12 @@ import { Link as ReactLink, useNavigate } from "react-router-dom";
 
 import Form from "../components/form.js";
 import PasswordInput from "../components/password.js";
+import useAlert from "../hooks/useAlert.js";
+import api from "../services/api.js";
 
 export default function Signup() {
+    const navigate = useNavigate();
+    const { setAlert } = useAlert();
     const [formsData, setFormsData] = useState({
         email: "",
         password: "",
@@ -14,7 +18,30 @@ export default function Signup() {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        //TODO
+        setAlert(null);
+
+        if(!formsData?.email || !formsData?.password || !formsData?.confirmPassword) {
+            setAlert({ type: "error", text: "All fields are required" });
+            return;
+        }
+
+        if(formsData.password !== formsData.confirmPassword) {
+            setAlert({ type: "error", text: "Passwords do not match" });
+            return;
+        }
+
+        try {
+            await api.signUp( formsData.email, formsData.password );
+            setAlert({ type: "success", text: "Account created successfully" });
+            navigate("/signin");
+        } catch (error) {
+            if(error.response) {
+                setAlert({ type: "error", text: error.response.data.message });
+                return;
+            }
+            setAlert({ type: "error", text: "Something went wrong, try again in a few seconds" });
+        }
+
     }
 
     function handleInputChange(event) {
