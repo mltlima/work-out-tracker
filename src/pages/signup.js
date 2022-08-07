@@ -5,21 +5,27 @@ import { Link as ReactLink, useNavigate } from "react-router-dom";
 import Form from "../components/form.js";
 import PasswordInput from "../components/password.js";
 import useAlert from "../hooks/useAlert.js";
+import useUserInfo from "../hooks/useUserInfo.js";
 import api from "../services/api.js";
 
 export default function Signup() {
     const navigate = useNavigate();
     const { setAlert } = useAlert();
+    const { setUserInfo } = useUserInfo();
     const [formsData, setFormsData] = useState({
         email: "",
         password: "",
         confirmPassword: "",
     });
 
-    async function handleSubmit(event) {
+    function handleInputChange(event) {
+        setFormsData({ ...formsData, [event.target.name]: event.target.value });
+    }
+
+    function handleSubmit(event) {
         event.preventDefault();
         setAlert(null);
-
+        console.log("HERE")
         if(!formsData?.email || !formsData?.password || !formsData?.confirmPassword) {
             setAlert({ type: "error", text: "All fields are required" });
             return;
@@ -30,10 +36,16 @@ export default function Signup() {
             return;
         }
 
+        if(formsData.password.length < 8) {
+            setAlert({ type: "error", text: "Password must be at least 8 characters long" });
+            return;
+        }
+
         try {
-            await api.signUp( formsData.email, formsData.password );
-            setAlert({ type: "success", text: "Account created successfully" });
-            navigate("/signin");
+            //await api.signUp( formsData.email, formsData.password );
+            //setAlert({ type: "success", text: "Account created successfully" });
+            setUserInfo({ email: formsData.email, password: formsData.password, confirmPassword: formsData.confirmPassword });
+            navigate("/completeProfile");
         } catch (error) {
             if(error.response) {
                 setAlert({ type: "error", text: error.response.data.message });
@@ -43,11 +55,6 @@ export default function Signup() {
         }
 
     }
-
-    function handleInputChange(event) {
-        setFormsData({ ...formsData, [event.target.name]: event.target.value });
-    }
-
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -80,7 +87,7 @@ export default function Signup() {
                     value={formsData.confirmPassword}
                 />
                 <Box sx={actionsContainer}>
-                    <Button sx={signupButton} variant="contained" type="submit" size="large">
+                    <Button sx={signupButton} variant="contained" type="submit">
                         Sign Up
                     </Button>
                     <Link component={ReactLink} to="/signin">

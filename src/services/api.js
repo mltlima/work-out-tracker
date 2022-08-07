@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseAPI = axios.create({baseURL: 'http://localhost:5000/'});
+const baseAPI = axios.create({baseURL: 'http://localhost:5000'});
 
 function getConfig(token) {
   return {
@@ -9,13 +9,19 @@ function getConfig(token) {
     },
   };
 }
+//{email, password, confirmPassword, name, weight, height, age}
+async function signUp(user) {
+    await baseAPI.post('/signup', user);
+}
 
-async function signUp(email, password) {
-    await baseAPI.post('/signup', { email, password });
+async function signIn(email, password) {
+    await baseAPI.post('/signin', { email, password });
 }
 
 const api = {
     signUp,
+    signIn,
+
 }
 
 export default api;
