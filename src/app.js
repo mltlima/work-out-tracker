@@ -5,6 +5,7 @@ import { createTheme, CssBaseline } from "@mui/material";
 import GetStarted from "./pages/getStarted";
 import Signup from "./pages/signup";
 import Signin from "./pages/signin";
+import Dashboard from "./pages/dashboard";
 import AlertProvider from "./contexts/alertContext.js";
 import AuthProvider from "./contexts/authContext.js";
 import UserInfoProvider from "./contexts/userInfoContext.js";
@@ -22,10 +23,11 @@ function App() {
                     <UserInfoProvider>
                         <BrowserRouter>
                             <Routes>
-                                <Route path="/" element={<GetStarted />} />
+                                <Route path="/" element={<Signin />} />
                                 <Route path="/signup" element={<Signup />} />
                                 <Route path="/signin" element={<Signin />} />
                                 <Route path="/completeProfile" element={<CompleteProfile />} />
+                                <Route path="/dashboard" element={<Dashboard />} />
                             </Routes>
                         </BrowserRouter>
                     </UserInfoProvider>

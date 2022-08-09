@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Link, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
 import { Link as ReactLink, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
 import Form from "../components/form.js";
 import PasswordInput from "../components/password.js";
@@ -10,13 +10,19 @@ import useAuth from "../hooks/useAuth.js";
 import { cssConfig } from "./signup.js";
 
 export default function Signin() {
-    const { signIn } = useAuth();
+    const { signIn, token } = useAuth();
     const { setAlert } = useAlert();
     const navigate = useNavigate();
     const [formsData, setFormsData] = useState({
         email: "",
         password: "",
     });
+
+    useEffect(() => {
+		if (token) {
+			navigate("/dashboard");
+		}
+	}, []);
 
     async function handleSubmit(event) {
         event.preventDefault();
@@ -28,14 +34,17 @@ export default function Signin() {
         }
 
         try {
-            const { token } = await api.signIn( formsData.email, formsData.password );
+            const { email, password } = formsData;
+            const {data: { token }} = await api.signIn( email, password )
+            console.log(token);
             signIn(token);
-            navigate("/"); //TODO REDIRECTION
+            navigate("/dashboard");
         } catch (error) {
             if(error.response) {
                 setAlert({ type: "error", text: error.response.data.message });
                 return;
             }
+            console.log(error)
             setAlert({ type: "error", text: "Something went wrong, try again in a few seconds" });
         }
 

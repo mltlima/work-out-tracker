@@ -15,7 +15,7 @@ async function signUp(user) {
 }
 
 async function signIn(email, password) {
-    await baseAPI.post('/signin', { email, password });
+    return await baseAPI.post('/signin', { email, password });
 }
 
 const api = {

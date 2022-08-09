@@ -12,7 +12,7 @@ import api from "../services/api.js";
 export default function CompleteProfile() {
     const navigate = useNavigate();
     const { setAlert } = useAlert();
-    const { userInfo } = useUserInfo();
+    const { userInfo, setUserInfo } = useUserInfo();
     const { email, password, confirmPassword } = userInfo;
     const [formsData, setFormsData] = useState({
         email: email,
@@ -40,6 +40,7 @@ export default function CompleteProfile() {
             navigate("/signin");
         } catch (error) {
             if(error.response) {
+                setUserInfo(formsData);
                 setAlert({ type: "error", text: error.response.data.message });
                 navigate("/signup");
                 //return;
