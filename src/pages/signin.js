@@ -90,11 +90,3 @@ export default function Signin() {
         </Form>
     );
 }
-
-const containerBox = {
-    marginTop: "180px",
-    width: "460px",
-    display: "flex",
-    flexDirection: "column",
-    textAlign: "center"
-}

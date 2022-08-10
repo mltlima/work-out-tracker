@@ -10,9 +10,8 @@ import AlertProvider from "./contexts/alertContext.js";
 import AuthProvider from "./contexts/authContext.js";
 import UserInfoProvider from "./contexts/userInfoContext.js";
 import CompleteProfile from "./pages/completeProfile.js";
+import Alert from "./components/alert.js";
 
-//import "./assets/reset.css";
-//import "./assets/style.css";
 
 function App() {
     return (
@@ -31,6 +30,7 @@ function App() {
                             </Routes>
                         </BrowserRouter>
                     </UserInfoProvider>
+                    <Alert />
                 </AuthProvider>
             </AlertProvider>
         </ThemeProvider>
