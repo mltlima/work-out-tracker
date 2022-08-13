@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const baseAPI = axios.create({baseURL: 'http://localhost:5000'});
+const URL = 'http://localhost:5000';
 
 function getConfig(token) {
   return {
@@ -9,19 +10,28 @@ function getConfig(token) {
     },
   };
 }
-//{email, password, confirmPassword, name, weight, height, age}
+
 async function signUp(user) {
-    await baseAPI.post('/signup', user);
+  await baseAPI.post('/signup', user);
 }
 
 async function signIn(email, password) {
-    return await baseAPI.post('/signin', { email, password });
+  return await baseAPI.post('/signin', { email, password });
+}
+
+async function getAllPrograms(token) {
+  return await axios.get(`${URL}/programs`, getConfig(token));
+}
+
+async function getUserProgram(token) {
+  return await axios.get(`${URL}/userProgram`, getConfig(token));
 }
 
 const api = {
-    signUp,
-    signIn,
-
+  signUp,
+  signIn,
+  getAllPrograms,
+  getUserProgram,
 }
 
 export default api;

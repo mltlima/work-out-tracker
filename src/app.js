@@ -6,6 +6,7 @@ import GetStarted from "./pages/getStarted";
 import Signup from "./pages/signup";
 import Signin from "./pages/signin";
 import Dashboard from "./pages/dashboard";
+import Workout from "./pages/workout"
 import AlertProvider from "./contexts/alertContext.js";
 import AuthProvider from "./contexts/authContext.js";
 import UserInfoProvider from "./contexts/userInfoContext.js";
@@ -27,6 +28,7 @@ function App() {
                                 <Route path="/signin" element={<Signin />} />
                                 <Route path="/completeProfile" element={<CompleteProfile />} />
                                 <Route path="/dashboard" element={<Dashboard />} />
+                                <Route path="/workout" element={<Workout />} />
                             </Routes>
                         </BrowserRouter>
                     </UserInfoProvider>

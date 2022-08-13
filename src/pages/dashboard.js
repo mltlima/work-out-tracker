@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Link, TextField, Typography, CircularProgress } from "@mui/material";
+import { Box, Paper, Divider, Link, TextField, Typography, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
@@ -38,13 +38,22 @@ export default function Dashboard() {
             <Typography sx={{ marginBottom: "16px" }} variant="h4" component={"h1"}>
                 {userInfo?.name}
             </Typography>
-            <Box sx={bmiBox}>
-                <Typography sx={{ marginBottom: "16px", width: "70%"}} variant="h6" component={"h1"}>
-                    BMI(Body Mass Index) of {bmi} 
-                    <span> You are {bmi > 25 ? "overweight" : bmi < 18.5 ? "underweight" : "healthy"}</span>
-                </Typography>
-                <CircularProgress sx={{position: "absolute", right: 10, top: 20}} variant="determinate" value={bmi}/>
-            </Box>
+            <Paper sx={bmiBox} elevation={3}>
+                <Box>
+                    <Typography sx={{ marginBottom: "16px", width: "70%"}} variant="h6" component={"h1"}>
+                        BMI(Body Mass Index) of {bmi} 
+                        <span> You are {bmi > 25 ? "overweight" : bmi < 18.5 ? "underweight" : "healthy"}</span>
+                    </Typography>
+                </Box>
+                <Box sx={{ position: 'relative', display: 'inline-flex', height: "40px" }}>    
+                    <CircularProgress variant="determinate" value={bmi}/>
+                    <Box sx={circularBmi}>
+                        <Typography variant="caption" component="div" color="text.secondary">
+                            {bmi}
+                        </Typography>
+                    </Box>
+                </Box>
+            </Paper>
             <Footer />
         </Box>
     );
@@ -64,7 +73,22 @@ const containerBox = {
 }
 
 const bmiBox = {
+    display: "flex",
     flexDirection: "row",
-    position: "relative",
+    backgroundColor: "#EBF3FF",
+    padding: "5px"
+    //position: "relative",
     //backgroundColor: "orange",
+}
+
+const circularBmi = {
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    //backgroundColor: "orange"
 }
