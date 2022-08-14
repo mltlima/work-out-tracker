@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import Footer from "../components/footer";
 import Calendar from "../components/calendar";
+import ResponsiveAppBar from "../components/header";
 import api from "../services/api.js";
 
 export default function Workout() {
@@ -33,6 +34,8 @@ export default function Workout() {
     const workoutDays = userProgram ? userProgram?.workoutDays : null;
 
     return (
+        <>
+        <ResponsiveAppBar />
         <Box sx={container}>
             <Box>
                 <Typography sx={{ marginBottom: "16px" }} variant="h4" component={"h1"}>
@@ -57,14 +60,20 @@ export default function Workout() {
             </Box>
             <Footer />
         </Box>
-
+        </>
     );
+}
+
+function NewProgram() {
+    
 }
 
 const container = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginTop: "74px",
+    marginBottom: "74px",
 }
 
 const programBox = {
@@ -73,8 +82,8 @@ const programBox = {
 }
 
 const card = {
-    width: "400px",
-    height: "200px",
+    width: "500px",
+    height: "400px",
     padding: "16px",
     margin: "16px",
 }

@@ -26,7 +26,8 @@ export default function Calendar(props) {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
         <StaticDatePicker
             renderDay={renderDaysWorkout}
-            displayStaticWrapperAs="desktop"
+            orientation="landscape"
+            displayStaticWrapperAs="mobile"
             openTo="day"
             value={value}
             onChange={(newValue) => {
