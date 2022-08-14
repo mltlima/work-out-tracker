@@ -11,7 +11,6 @@ export default function Calendar(props) {
     const days = ['8/8/2022', '8/9/2022', '8/10/2022'];
 
     const renderDaysWorkout = (date, selectedDates, pickersDayProps) => {
-        console.log(date.toLocaleDateString("en-US"));
         if(days.includes(date.toLocaleDateString("en-US"))) {
             return (
                 <PickersDay day={date} selected={true}/>

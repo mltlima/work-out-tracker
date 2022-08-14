@@ -27,11 +27,16 @@ async function getUserProgram(token) {
   return await axios.get(`${URL}/userProgram`, getConfig(token));
 }
 
+async function getAllWorkouts(token) {
+  return await axios.get(`${URL}/workouts`, getConfig(token));
+}
+
 const api = {
   signUp,
   signIn,
   getAllPrograms,
   getUserProgram,
+  getAllWorkouts,
 }
 
 export default api;
