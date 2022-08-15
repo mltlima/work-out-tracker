@@ -104,7 +104,10 @@ const containerBox = {
     width: "460px",
     display: "flex",
     flexDirection: "column",
-    textAlign: "center"
+    textAlign: "center",
+    ["@media (max-width:800px)"]: { 
+        width: "300px" 
+    }
 }
 
 const actionsContainer = {
