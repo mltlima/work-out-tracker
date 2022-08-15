@@ -7,15 +7,14 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function Footer() {
-    const navigate = useNavigate();
 
     return(
         <Paper sx={footerStyle} elevation={3}>
             <BottomNavigation>
-                <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon />} onClick={() => navigate("/")}/>
-                <BottomNavigationAction label="Progress" icon={<InsertChartOutlinedIcon />} />
-                <BottomNavigationAction label="Exercises" icon={<FitnessCenterOutlinedIcon />} />
-                <BottomNavigationAction label="Profile" icon={<PersonOutlineOutlinedIcon />} />
+                <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon />} href="/"/>
+                <BottomNavigationAction label="Progress" icon={<InsertChartOutlinedIcon /> } href="/"/>
+                <BottomNavigationAction label="Exercises" icon={<FitnessCenterOutlinedIcon />} href="/workout"/>
+                <BottomNavigationAction label="Profile" icon={<PersonOutlineOutlinedIcon />} href="/dashboard"/>
             </BottomNavigation>
         </Paper>
     );

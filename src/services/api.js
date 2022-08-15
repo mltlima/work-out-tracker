@@ -3,7 +3,7 @@ import axios from 'axios';
 const baseAPI = axios.create({baseURL: 'http://localhost:5000'});
 const URL = 'http://localhost:5000';
 
-function getConfig(token) {
+async function getConfig(token) {
   return {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -20,15 +20,19 @@ async function signIn(email, password) {
 }
 
 async function getAllPrograms(token) {
-  return await axios.get(`${URL}/programs`, getConfig(token));
+  return await axios.get(`${URL}/programs`, await getConfig(token));
 }
 
 async function getUserProgram(token) {
-  return await axios.get(`${URL}/userProgram`, getConfig(token));
+  return await axios.get(`${URL}/userProgram`, await getConfig(token));
 }
 
 async function getAllWorkouts(token) {
-  return await axios.get(`${URL}/workouts`, getConfig(token));
+  return await axios.get(`${URL}/workouts`, await getConfig(token));
+}
+
+async function addUserProgram(token, programId) {
+  return await axios.post(`${URL}/program/`, {programId}, await getConfig(token));
 }
 
 const api = {
@@ -37,6 +41,7 @@ const api = {
   getAllPrograms,
   getUserProgram,
   getAllWorkouts,
+  addUserProgram,
 }
 
 export default api;

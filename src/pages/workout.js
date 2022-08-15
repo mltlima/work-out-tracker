@@ -1,30 +1,39 @@
-import { Box, Paper, Divider, Link, TextField, Typography } from "@mui/material";
+import { Box, Paper, TextField, Typography, Accordion, AccordionSummary, AccordionDetails, Link } from "@mui/material";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { getDay } from 'date-fns';
 
 import useAuth from "../hooks/useAuth";
-import Footer from "../components/footer";
 import Calendar from "../components/calendar";
 import ResponsiveAppBar from "../components/header";
 import ToggleDays from "../components/toggleDays";
 import MultipleSelectCheckmarks from "../components/multipleSelections";
+import SimpleAccordion from "../components/accordion";
 import Form from "../components/form";
 import api from "../services/api.js";
+
+const daysOfWeek = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
 
 export default function Workout() {
     const { token } = useAuth(); 
     const [program, setProgram] = useState(null);
     const [userProgram, setUserProgram] = useState(null);
     const [workouts, setWorkouts] = useState([]);
+    const [selectedProgram, setSelectedProgram] = useState(null);
+    const [selectedDays, setSelectedDays] = useState([]);
 
     useEffect(() => {
+        if(selectedProgram > 0 && token.length > 0) {
+            api.addUserProgram(token, selectedProgram)
+        }
+
         const promise = api.getAllPrograms(token);
         promise.then(response => {
             setProgram(response.data);
-            console.log(response.data);
         }).catch(err => {
             console.log(err);
         })
@@ -35,22 +44,38 @@ export default function Workout() {
         }).catch(err => {
             console.log(err);
         })
-
+        
         const promise3 = api.getAllWorkouts(token);
         promise3.then(response => {
-            //console.log(response.data.response);
-            let lst = [];
-            response.data.response.map(workout => {
-                lst.push(workout.name);
-            })
-            setWorkouts([...lst]);
+            setWorkouts(response.data.response);
         }).catch(err => {
             console.log(err);
         })
-    }, [token]);
+    }, [token, selectedProgram]);
 
-    const workoutDays = userProgram ? userProgram?.workoutDays : null;
+    useEffect(() => {
+        //get list of workout days
+        if (userProgram) {
+            const today = new Date();
+            const end = new Date(userProgram.end);
 
+            const programWeeks = [];
+
+            userProgram.Block.map(program => {
+                programWeeks.push(daysOfWeek.indexOf(program.day));
+            })
+
+            const programDays = [];
+            while (today <= end) {
+                if (programWeeks.includes(today.getDay())) {
+                    programDays.push(today.toLocaleDateString("en-US"));
+                }
+                today.setDate(today.getDate() + 1);
+            }
+            setSelectedDays(programDays);
+        }
+    } , [userProgram]);
+ 
     return (
         <>
         <ResponsiveAppBar />
@@ -61,25 +86,116 @@ export default function Workout() {
                 </Typography>
             </Box>
             <Box>
-                <Calendar />
+                <Calendar days={selectedDays}/>
             </Box>
             <Box sx={programBox}>
                 <Paper sx={card} elevation={3}>
-                    {program?.length > 0 ? <Typography>{"todo"}</Typography> : <Typography>{"No programs yet :("}</Typography>}
+                    {program?.length > 0 ? <SimpleAccordion program={program}/> : <Typography>{"No programs yet :("}</Typography>}
                 </Paper>
                 <Paper sx={card} elevation={3}>
-                    {userProgram?.length > 0 ? <Typography>TODO</Typography> : <NewProgram workouts={workouts}/>}
+                    {userProgram?.id > 0 ? <UserProgram userProgram={userProgram}/> : <SelectProgram program={program} setSelectedProgram={setSelectedProgram}/>}
                 </Paper>
             </Box>
             <Box sx={programBox}>
                 <Paper sx={card} elevation={3}>
-                    <Typography>Select a exercise</Typography>
-                </Paper>
-                <Paper sx={card} elevation={3}>
-                    <Typography>Create a exercise</Typography>
+                    <SelectExercise workouts={workouts}/>
                 </Paper>
             </Box>
-            <Footer />
+        </Box>
+        </>
+    );
+}
+
+function SelectExercise(props) {
+    const { workouts } = props;
+
+    return(
+        <>
+        <Typography sx={{marginBottom: "16px"}}>All exercises</Typography>
+        <Box sx={containerBox}>
+            {workouts?.map((workout, index) => (
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                        >
+                    <Typography>{workout.name}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>           
+                        <Typography>{workout.name}</Typography>
+                        <Typography>reps {workout.reps}, sets {workout.sets}</Typography>
+                        <Link href="#" onClick={() => window.open(workout.videoUrl, '_blank').focus()}>exercise video</Link>
+                    </AccordionDetails>
+                </Accordion>
+            ))}
+        </Box>
+        </>
+    );
+}
+
+function SelectProgram(props) {
+    const { program, setSelectedProgram } = props;
+
+    return (
+        <>
+            <Typography>Select a program</Typography>
+            {program?.map(program => (
+                <Box onClick={() => setSelectedProgram(program.id)} sx={selectProgramBox}>
+                    <Typography>{program.name}</Typography>
+                </Box>
+            ))}
+        </>
+    );
+}
+
+function UserProgram(props) {
+    const { userProgram } = props;
+
+    return (
+        <>
+        <Typography sx={{marginBottom: "16px"}}>User current program</Typography>
+        <Box sx={containerBox}>
+        <Accordion>
+            <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                >
+            <Typography>{userProgram.name}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+            {userProgram.Block.map((block, index) => (
+                <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>{block.name}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {block.Workout?.map((workout, index) => (
+                        <Accordion>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="panel1a-content"
+                          id="panel1a-header"
+                        >
+                          <Typography>{workout.name}</Typography>
+                        </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography>{workout.name}</Typography>
+                                <Typography>reps {workout.reps}, sets {workout.sets}</Typography>
+                                <Link href="#" onClick={() => window.open(workout.videoUrl, '_blank').focus()}>exercise video</Link>
+                            </AccordionDetails>
+                        </Accordion>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
+          ))}
+            </AccordionDetails>
+      </Accordion>
         </Box>
         </>
     );
@@ -172,6 +288,10 @@ const container = {
 const programBox = {
     display: "flex",
     flexDirection: "row",
+    ["@media (max-width:800px)"]: { 
+        flexDirection: "column",
+        width: "300px"
+    }
 }
 
 const card = {
@@ -179,6 +299,9 @@ const card = {
     height: "400px",
     padding: "16px",
     margin: "16px",
+    ["@media (max-width:800px)"]: { 
+        width: "300px"
+    }
 }
 
 const containerBox = {
@@ -187,4 +310,19 @@ const containerBox = {
     display: "flex",
     flexDirection: "column",
     overflowY: "scroll",
+    ["@media (max-width:800px)"]: { 
+        width: "280px"
+    }
+}
+
+const selectProgramBox = {
+    marginBottom: "16px",
+    backgroundColor: '#96B3FE',
+    display: "flex",
+    justifyContent: "center",
+    borderRadius: "10px",
+    padding: "16px",
+    '&:hover': {
+        cursor: 'pointer',
+    }
 }

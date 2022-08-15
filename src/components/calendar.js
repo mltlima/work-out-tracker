@@ -6,9 +6,8 @@ import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 
 export default function Calendar(props) {
-    const { selectedDays } = props;
+    const { days } = props;
     const [value, setValue] = React.useState(new Date());
-    const days = ['8/8/2022', '8/9/2022', '8/10/2022'];
 
     const renderDaysWorkout = (date, selectedDates, pickersDayProps) => {
         if(days.includes(date.toLocaleDateString("en-US"))) {
@@ -33,8 +32,14 @@ export default function Calendar(props) {
             setValue(newValue);
             }}
             renderInput={(params) => <TextField {...params} />}
+            sx={mobile}
         />
         </LocalizationProvider>
     );
 }
 
+const mobile = {
+    ["@media (max-width:800px)"]: { 
+        display: "none"
+    }
+}
