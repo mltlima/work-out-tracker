@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const baseAPI = axios.create({baseURL: 'http://localhost:5000'});
-const URL = 'http://localhost:5000';
+const baseAPI = axios.create({baseURL: 'https://workouttracker-miguel.herokuapp.com'});
+const URL = 'https://workouttracker-miguel.herokuapp.com';
 
 async function getConfig(token) {
   return {
